@@ -102,10 +102,20 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
-        case .connected: print("Connected: \(peerID.displayName).")
-        case .connecting: print("Connecting: \(peerID.displayName).")
-        case .notConnected: print("Not connected: \(peerID.displayName).")
-        @unknown default: print("Unknown state received: \(peerID.displayName).")
+        case .connected:
+            print("Connected: \(peerID.displayName).")
+        case .connecting:
+            print("Connecting: \(peerID.displayName).")
+        case .notConnected:
+            DispatchQueue.main.async {
+                [weak self] in
+                let alertController = UIAlertController(title: "\(peerID.displayName) has disconnected from our network.", message: nil, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Dismiss", style: .default))
+                //dismiss(animated: false)
+                self?.present(alertController, animated: true)
+            }
+        @unknown default:
+            print("Unknown state received: \(peerID.displayName).")
         }
     }
     
