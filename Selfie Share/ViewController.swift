@@ -15,12 +15,19 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
     var mcSession: MCSession?
     var mcNearbyServiceAdvertiser: MCNearbyServiceAdvertiser?
     
+    var textMessage = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Selfie Share"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showConnectionPrompt))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(importPicture))
+        
+        let connection = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showConnectionPrompt))
+        let imageSender = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(importPicture))
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        let texter = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(sendText))
+        toolbarItems = [connection, spacer, imageSender, spacer, texter]
+        navigationController?.isToolbarHidden = false
 
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         mcSession?.delegate = self
@@ -58,6 +65,36 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
         picker.allowsEditing = true
         picker.delegate = self
         present(picker, animated: true)
+    }
+    
+    @objc func sendText() {
+        guard let mcSession = mcSession else { return }
+        
+        let alertController = UIAlertController(title: "Send messages!", message: "Type the message you want to send.", preferredStyle: .alert)
+        alertController.addTextField()
+        
+        let getTextMessage = UIAlertAction(title: "Send", style: .default) {
+            [weak self, weak alertController] _ in
+            guard let text = alertController?.textFields?[0].text else { return }
+            self?.textMessage = text
+            
+            if mcSession.connectedPeers.count > 0 {
+                guard let UTF8String = self?.textMessage.utf8 else { return }
+                let textData = Data(UTF8String)
+                
+                do {
+                    try mcSession.send(textData, toPeers: mcSession.connectedPeers, with: .reliable)
+                } catch {
+                    let alertController = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: "Okay", style: .default))
+                    self?.present(alertController, animated: true)
+                }
+            }
+        }
+        
+        alertController.addAction(getTextMessage)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -111,7 +148,6 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
                 [weak self] in
                 let alertController = UIAlertController(title: "\(peerID.displayName) has disconnected from our network.", message: nil, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: "Dismiss", style: .default))
-                //dismiss(animated: false)
                 self?.present(alertController, animated: true)
             }
         @unknown default:
@@ -125,6 +161,14 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
             if let image = UIImage(data: data) {
                 self?.images.insert(image, at: 0)
                 self?.collectionView.reloadData()
+            } else {
+                let textMessage = String(decoding: data, as: UTF8.self)
+                let alertController = UIAlertController(title: "You have received a message", message: textMessage, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Respond", style: .default, handler: { _ in
+                    self?.sendText()
+                }))
+                alertController.addAction(UIAlertAction(title: "Dismiss", style: .default))
+                self?.present(alertController, animated: true)
             }
         }
     }
