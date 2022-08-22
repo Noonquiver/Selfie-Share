@@ -4,7 +4,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
-        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,7 +15,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ZkS-zh-6Rq">
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ZkS-zh-6Rq">
                             <size key="itemSize" width="145" height="145"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -26,21 +25,21 @@
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageView" id="4dG-8f-j58">
                                 <rect key="frame" x="10" y="10" width="145" height="145"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="R7R-GO-kLw">
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                     <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1000" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Yr-TN-xsU">
-                                            <rect key="frame" x="0.0" y="9" width="145" height="145"/>
+                                        <imageView userInteractionEnabled="NO" tag="1000" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Yr-TN-xsU">
+                                            <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
                                         </imageView>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="8Yr-TN-xsU" secondAttribute="bottom" constant="-9" id="QAN-ol-gjF"/>
-                                        <constraint firstItem="8Yr-TN-xsU" firstAttribute="leading" secondItem="R7R-GO-kLw" secondAttribute="leading" id="Ufg-N6-qLk"/>
-                                        <constraint firstItem="8Yr-TN-xsU" firstAttribute="top" secondItem="R7R-GO-kLw" secondAttribute="top" constant="9" id="hwJ-t2-mJT"/>
-                                        <constraint firstItem="8Yr-TN-xsU" firstAttribute="centerX" secondItem="R7R-GO-kLw" secondAttribute="centerX" id="i4e-Ec-mon"/>
-                                    </constraints>
-                                </collectionViewCellContentView>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="8Yr-TN-xsU" firstAttribute="centerY" secondItem="4dG-8f-j58" secondAttribute="centerY" id="MlM-Wc-Mu1"/>
+                                    <constraint firstItem="8Yr-TN-xsU" firstAttribute="top" secondItem="4dG-8f-j58" secondAttribute="topMargin" constant="-8" id="NNT-O1-fae"/>
+                                    <constraint firstItem="8Yr-TN-xsU" firstAttribute="centerX" secondItem="4dG-8f-j58" secondAttribute="centerX" id="aGi-zg-NY4"/>
+                                    <constraint firstItem="8Yr-TN-xsU" firstAttribute="leading" secondItem="4dG-8f-j58" secondAttribute="leadingMargin" constant="-8" id="vrJ-uK-zJg"/>
+                                </constraints>
                             </collectionViewCell>
                         </cells>
                         <connections>
