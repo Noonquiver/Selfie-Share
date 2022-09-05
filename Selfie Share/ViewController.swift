@@ -26,7 +26,8 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
         let imageSender = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(importPicture))
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let texter = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(sendText))
-        toolbarItems = [connection, spacer, imageSender, spacer, texter]
+        let connectedPeers = UIBarButtonItem(title: "Who's connected?", style: .plain, target: self, action: #selector(viewConnectedPeers))
+        toolbarItems = [connection, spacer, imageSender, spacer, texter, spacer, connectedPeers]
         navigationController?.isToolbarHidden = false
 
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
@@ -190,5 +191,19 @@ class ViewController: UICollectionViewController, UINavigationControllerDelegate
         ac.addAction(acceptAction)
         
         present(ac, animated: true)
+    }
+    
+    @objc func viewConnectedPeers() {
+        guard let session = mcSession else { return }
+        let alertController = UIAlertController(title: "Currently connected peers", message: nil, preferredStyle: .actionSheet)
+        
+        for peer in session.connectedPeers {
+            let alertAction = UIAlertAction(title: peer.displayName, style: .default)
+            alertAction.isEnabled.toggle()
+            alertController.addAction(alertAction)
+        }
+        
+        alertController.addAction(UIAlertAction(title: "Dismiss", style: .default))
+        present(alertController, animated: true)
     }
 }
